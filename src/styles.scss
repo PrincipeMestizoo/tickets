@@ -1,0 +1,191 @@
+/* ===========================================================
+   HelpDesk · Estilos globales
+   Paleta: naranja (acento/acción), blanco hueso (fondo),
+   azul degradado (identidad / headers / sidebar)
+   =========================================================== */
+
+:root {
+  /* Naranja */
+  --color-orange-500: #FF7A29;
+  --color-orange-600: #F0611A;
+  --color-orange-100: #FFE8D9;
+
+  /* Azul degradado */
+  --color-blue-700: #123A6B;
+  --color-blue-500: #1D5FA8;
+  --color-blue-400: #2E7BD6;
+  --gradient-blue: linear-gradient(135deg, var(--color-blue-700) 0%, var(--color-blue-400) 100%);
+  --gradient-blue-soft: linear-gradient(135deg, #1D5FA8 0%, #4C9BE8 100%);
+
+  /* Blanco hueso / neutros */
+  --color-bone: #FAF6F0;
+  --color-bone-dark: #F1EAE0;
+  --color-white: #FFFFFF;
+  --color-text: #2B2B33;
+  --color-text-muted: #6E6E7A;
+  --color-border: #E6DFD3;
+
+  /* Estados de tickets */
+  --status-open: #2E7BD6;
+  --status-in_progress: #F0611A;
+  --status-resolved: #2E9E6B;
+  --status-closed: #8A8A96;
+
+  /* Prioridades */
+  --priority-low: #6FBF73;
+  --priority-medium: #F2B84B;
+  --priority-high: #F0611A;
+  --priority-urgent: #E23E3E;
+
+  --shadow-soft: 0 4px 16px rgba(18, 58, 107, 0.08);
+  --shadow-medium: 0 8px 28px rgba(18, 58, 107, 0.14);
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --transition-base: 200ms cubic-bezier(.4,0,.2,1);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  background: var(--color-bone);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, .font-display {
+  font-family: 'Poppins', 'Inter', sans-serif;
+  font-weight: 600;
+  color: var(--color-blue-700);
+}
+
+a { color: var(--color-blue-500); text-decoration: none; }
+
+/* ---------- Botones ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  border: none;
+  font-weight: 600;
+  font-size: 0.925rem;
+  cursor: pointer;
+  transition: transform var(--transition-base), box-shadow var(--transition-base), background var(--transition-base);
+}
+.btn:active { transform: translateY(1px) scale(.98); }
+.btn:disabled { opacity: .55; cursor: not-allowed; }
+
+.btn-primary {
+  background: var(--color-orange-500);
+  color: var(--color-white);
+  box-shadow: var(--shadow-soft);
+}
+.btn-primary:hover:not(:disabled) {
+  background: var(--color-orange-600);
+  box-shadow: var(--shadow-medium);
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1.5px solid var(--color-blue-500);
+  color: var(--color-blue-500);
+}
+.btn-outline:hover:not(:disabled) {
+  background: var(--color-blue-500);
+  color: var(--color-white);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--color-text-muted);
+}
+.btn-ghost:hover:not(:disabled) { background: var(--color-bone-dark); color: var(--color-text); }
+
+.btn-danger {
+  background: var(--priority-urgent);
+  color: var(--color-white);
+}
+
+/* ---------- Tarjetas ---------- */
+.card {
+  background: var(--color-white);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-soft);
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
+}
+.card:hover { box-shadow: var(--shadow-medium); }
+
+/* ---------- Formularios ---------- */
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.form-field label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-blue-700);
+}
+.form-field input,
+.form-field select,
+.form-field textarea {
+  padding: 11px 14px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--color-border);
+  background: var(--color-bone);
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+}
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+  outline: none;
+  border-color: var(--color-orange-500);
+  box-shadow: 0 0 0 3px var(--color-orange-100);
+}
+.form-error {
+  color: var(--priority-urgent);
+  font-size: 0.8rem;
+  margin-top: 2px;
+}
+
+/* ---------- Animaciones utilitarias ---------- */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.animate-fade-up { animation: fadeInUp .35s ease both; }
+.animate-fade { animation: fadeIn .3s ease both; }
+
+/* ---------- Scrollbar sutil ---------- */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-blue-400); }
+
+/* ---------- Utilidades de layout ---------- */
+.container-page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 28px 24px 60px;
+}
