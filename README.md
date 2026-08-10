@@ -17,10 +17,6 @@ hacia el backend real, evitando problemas de CORS. En producción
 ## Credenciales de prueba
 
 | Rol | Usuario | Contraseña |
-|---|---|---|
-| Administrador | admin@helpdesk.dev | Admin123! |
-| Agente | agent1@helpdesk.dev | Agent123! |
-| Cliente | client1@helpdesk.dev | Client123! |
 
 ## Estructura del proyecto
 
@@ -42,45 +38,6 @@ src/app/
 │   └── users/                 # solo administrador
 └── app-routing.module.ts  # rutas raíz + guards + lazy loading
 ```
-
-## Respuestas a las preguntas de sustentación
-
-**¿Por qué existen dos tokens?**
-El `accessToken` es de corta duración y viaja en cada petición; limita el
-daño si se filtra. El `refreshToken` vive más tiempo y solo se usa contra
-`/auth/refresh` para obtener un `accessToken` nuevo sin pedir credenciales
-de nuevo. Separar ambos reduce la ventana de exposición del token que
-realmente autoriza operaciones.
-
-**¿Dónde se almacenan y por qué?**
-Ambos en `localStorage` (ver `AuthService`), para sobrevivir a recargas de
-página. Es una decisión pragmática para este ejercicio; en producción se
-evaluaría mover el `refreshToken` a una cookie `httpOnly` para mitigar XSS.
-
-**¿Cómo determina el guard si existe una sesión válida?**
-`AuthGuard` verifica que exista un `accessToken` en almacenamiento y un
-`currentUser` cargado en memoria (`AuthService`). No valida la firma del
-JWT en el cliente; la validez real la confirma el backend en cada llamada.
-
-**¿Qué ocurre cuando varias peticiones reciben 401 simultáneamente?**
-`TokenRefreshInterceptor` usa un `BehaviorSubject<string|null>` como
-semáforo: la primera petición que recibe `401 TOKEN_EXPIRED` dispara el
-refresh y pone `isRefreshing = true`; las siguientes se "congelan"
-escuchando ese subject (`filter` + `take(1)`) y se reintentan automáticamente
-con el token nuevo en cuanto está disponible, sin disparar refrescos
-duplicados.
-
-**¿Diferencia entre 401 y 403?**
-`401 Unauthorized`: no hay sesión válida (falta token o expiró) →
-se intenta renovar o se redirige a login. `403 Forbidden`: hay sesión
-válida, pero el usuario no tiene permiso para esa acción/recurso → se
-muestra el error, no se reintenta ni se pide login de nuevo.
-
-**¿Cómo restringir funcionalidades según el rol sin depender solo de la UI?**
-La UI (guards, `*ngIf`, `SharedModule`) solo mejora la experiencia
-ocultando lo que el rol no debería ver, pero la autorización real siempre
-la aplica el backend en cada endpoint. Nunca se confía en que el cliente
-"no mostró el botón" como medida de seguridad.
 
 ## Notas
 
