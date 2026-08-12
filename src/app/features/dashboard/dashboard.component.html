@@ -1,0 +1,24 @@
+<div class="container-page animate-fade-up">
+  <h1>Hola, {{ user?.name }} 👋</h1>
+  <p class="page-subtitle">{{ welcomeMessage }}</p>
+
+  <div class="stats-grid">
+    <div class="stat-card card">
+      <span class="stat-card__value" [class.stat-card__value--loading]="loading">{{ openCount }}</span>
+      <span class="stat-card__label">Abiertos</span>
+    </div>
+    <div class="stat-card card">
+      <span class="stat-card__value" [class.stat-card__value--loading]="loading">{{ inProgressCount }}</span>
+      <span class="stat-card__label">En progreso</span>
+    </div>
+    <div class="stat-card card">
+      <span class="stat-card__value" [class.stat-card__value--loading]="loading">{{ resolvedCount }}</span>
+      <span class="stat-card__label">Resueltos</span>
+    </div>
+  </div>
+
+  <div class="quick-actions">
+    <a class="btn btn-primary" routerLink="/tickets">Ver tickets</a>
+    <a class="btn btn-outline" routerLink="/tickets/new" *ngIf="user?.role !== 'agent'">Crear ticket</a>
+  </div>
+</div>
