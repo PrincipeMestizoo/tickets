@@ -1,0 +1,42 @@
+.page-subtitle { color: var(--color-text-muted); margin-top: -8px; margin-bottom: 22px; }
+
+.table-wrap {
+  overflow-x: auto;
+  padding: 8px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th, td { text-align: left; padding: 14px 16px; font-size: .9rem; }
+  thead th {
+    color: var(--color-text-muted);
+    font-weight: 600;
+    font-size: .78rem;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    border-bottom: 2px solid var(--color-border);
+  }
+  tbody tr { border-bottom: 1px solid var(--color-border); transition: background var(--transition-base); }
+  tbody tr:hover { background: var(--color-bone); }
+
+  select {
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--color-border);
+    background: var(--color-white);
+  }
+}
+
+.role-pill {
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: .75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+
+  &--admin { background: var(--color-orange-100); color: var(--color-orange-600); }
+  &--agent { background: #E3EEFB; color: var(--color-blue-500); }
+  &--client { background: #EAF7EE; color: #2E7D4F; }
+}

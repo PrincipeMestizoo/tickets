@@ -1,0 +1,32 @@
+<div class="container-page animate-fade-up">
+  <h1>Gestión de usuarios</h1>
+  <p class="page-subtitle">Consulta los usuarios registrados y administra sus roles</p>
+
+  <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+  <p class="form-error" *ngIf="errorMsg">{{ errorMsg }}</p>
+
+  <div class="card table-wrap" *ngIf="!loading && users.length">
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Correo</th>
+          <th>Rol actual</th>
+          <th>Cambiar rol</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let u of users">
+          <td>{{ u.name }}</td>
+          <td>{{ u.email }}</td>
+          <td><span class="role-pill" [class]="'role-pill--' + u.role">{{ u.role }}</span></td>
+          <td>
+            <select [ngModel]="u.role" (ngModelChange)="changeRole(u, $event)" [disabled]="savingId === u.id">
+              <option *ngFor="let r of roles" [value]="r">{{ r }}</option>
+            </select>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
