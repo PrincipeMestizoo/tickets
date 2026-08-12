@@ -1,0 +1,56 @@
+<div class="container-page animate-fade-up">
+  <div class="page-header">
+    <div>
+      <h1>Tickets</h1>
+      <p class="page-subtitle">Gestiona y da seguimiento a las solicitudes de soporte</p>
+    </div>
+    <button class="btn btn-primary" *ngIf="canCreate" routerLink="/tickets/new">+ Nuevo ticket</button>
+  </div>
+
+  <div class="filters card">
+    <div class="form-field">
+      <label>Estado</label>
+      <select [(ngModel)]="statusFilter" (ngModelChange)="applyFilters()">
+        <option value="">Todos</option>
+        <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label>Prioridad</label>
+      <select [(ngModel)]="priorityFilter" (ngModelChange)="applyFilters()">
+        <option value="">Todas</option>
+        <option *ngFor="let p of priorities" [value]="p">{{ p }}</option>
+      </select>
+    </div>
+  </div>
+
+  <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+
+  <p class="form-error" *ngIf="errorMsg">{{ errorMsg }}</p>
+
+  <div class="ticket-grid" *ngIf="!loading && tickets.length">
+    <div class="ticket-card card" *ngFor="let t of tickets" (click)="openTicket(t.id)">
+      <div class="ticket-card__top">
+        <app-status-badge [status]="t.status"></app-status-badge>
+        <app-priority-badge [priority]="t.priority"></app-priority-badge>
+      </div>
+      <h3 class="ticket-card__title">{{ t.title }}</h3>
+      <p class="ticket-card__desc">{{ t.description }}</p>
+      <div class="ticket-card__footer">
+        <span *ngIf="t.clientName">Cliente: {{ t.clientName }}</span>
+        <span *ngIf="t.agentName">Agente: {{ t.agentName }}</span>
+        <span *ngIf="!t.agentName">Sin asignar</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="empty-state card" *ngIf="!loading && !tickets.length && !errorMsg">
+    <p>No hay tickets que coincidan con los filtros seleccionados.</p>
+  </div>
+
+  <div class="pagination" *ngIf="!loading && totalPages > 1">
+    <button class="btn btn-ghost" (click)="goToPage(page - 1)" [disabled]="page === 1">‹ Anterior</button>
+    <span>Página {{ page }} de {{ totalPages }}</span>
+    <button class="btn btn-ghost" (click)="goToPage(page + 1)" [disabled]="page === totalPages">Siguiente ›</button>
+  </div>
+</div>

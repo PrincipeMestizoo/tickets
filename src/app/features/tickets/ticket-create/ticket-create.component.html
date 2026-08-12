@@ -1,0 +1,38 @@
+<div class="container-page container-narrow animate-fade-up">
+  <h1>Nuevo ticket</h1>
+  <p class="page-subtitle">Describe el problema con el mayor detalle posible</p>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="card form-card" novalidate>
+    <div class="form-field">
+      <label for="title">Título</label>
+      <input id="title" type="text" formControlName="title" placeholder="Ej: No puedo acceder a mi correo" />
+      <span class="form-error" *ngIf="f['title'].touched && f['title'].invalid">
+        El título debe tener al menos 4 caracteres.
+      </span>
+    </div>
+
+    <div class="form-field">
+      <label for="description">Descripción</label>
+      <textarea id="description" rows="5" formControlName="description" placeholder="Cuéntanos qué ocurre, cuándo empezó y qué has intentado..."></textarea>
+      <span class="form-error" *ngIf="f['description'].touched && f['description'].invalid">
+        La descripción debe tener al menos 10 caracteres.
+      </span>
+    </div>
+
+    <div class="form-field">
+      <label for="priority">Prioridad</label>
+      <select id="priority" formControlName="priority">
+        <option *ngFor="let p of priorities" [value]="p">{{ p }}</option>
+      </select>
+    </div>
+
+    <p class="form-error" *ngIf="serverError">{{ serverError }}</p>
+
+    <div class="form-card__actions">
+      <button class="btn btn-ghost" type="button" routerLink="/tickets">Cancelar</button>
+      <button class="btn btn-primary" type="submit" [disabled]="loading">
+        {{ loading ? 'Creando...' : 'Crear ticket' }}
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,23 @@
+.container-narrow { max-width: 640px; }
+.page-subtitle { color: var(--color-text-muted); margin-top: -8px; margin-bottom: 22px; }
+
+.form-card {
+  padding: 26px 28px;
+
+  textarea {
+    padding: 11px 14px;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--color-border);
+    background: var(--color-bone);
+    font-family: inherit;
+    resize: vertical;
+    &:focus { outline: none; border-color: var(--color-orange-500); box-shadow: 0 0 0 3px var(--color-orange-100); }
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 8px;
+  }
+}

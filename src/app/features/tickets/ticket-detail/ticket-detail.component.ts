@@ -1,0 +1,131 @@
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormBuilder, Validators } from '@angular/forms';
+import { TicketService } from '../../../core/services/ticket.service';
+import { UserService } from '../../../core/services/user.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { Ticket, TicketPriority, TicketStatus } from '../../../core/models/ticket.model';
+import { User } from '../../../core/models/user.model';
+
+@Component({
+  selector: 'app-ticket-detail',
+  templateUrl: './ticket-detail.component.html',
+  styleUrls: ['./ticket-detail.component.scss']
+})
+export class TicketDetailComponent implements OnInit {
+  ticket: Ticket | null = null;
+  loading = true;
+  errorMsg = '';
+  savingComment = false;
+  savingUpdate = false;
+
+  agents: User[] = [];
+  statuses: TicketStatus[] = ['open', 'in_progress', 'resolved', 'closed'];
+  priorities: TicketPriority[] = ['low', 'medium', 'high', 'urgent'];
+
+  commentForm = this.fb.group({
+    message: ['', [Validators.required, Validators.minLength(2)]],
+  });
+
+  updateForm = this.fb.group({
+    status: [''],
+    priority: [''],
+    agentId: [''],
+  });
+
+  private ticketId = '';
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private fb: FormBuilder,
+    private ticketService: TicketService,
+    private userService: UserService,
+    public authService: AuthService,
+  ) {}
+
+  ngOnInit(): void {
+    this.ticketId = this.route.snapshot.paramMap.get('id') ?? '';
+    this.load();
+
+    if (this.authService.hasRole('admin')) {
+      this.userService.getAgents().subscribe({
+        next: agents => this.agents = agents,
+        error: () => {}
+      });
+    }
+  }
+
+  // Reglas visibles en el formulario según el rol (el backend valida de todas formas):
+  get canEditStatus(): boolean {
+    return this.authService.hasRole('admin') ||
+      (this.authService.hasRole('agent') && this.ticket?.agentId === this.authService.currentUser?.id);
+  }
+
+  get canAssign(): boolean {
+    return this.authService.hasRole('admin');
+  }
+
+  load(): void {
+    this.loading = true;
+    this.ticketService.getTicketById(this.ticketId).subscribe({
+      next: (t) => {
+        this.ticket = t;
+        this.updateForm.patchValue({
+          status: t.status,
+          priority: t.priority,
+          agentId: t.agentId ?? '',
+        });
+        this.loading = false;
+      },
+      error: () => {
+        this.errorMsg = 'No fue posible cargar el ticket.';
+        this.loading = false;
+      }
+    });
+  }
+
+  addComment(): void {
+    if (this.commentForm.invalid || !this.ticket) return;
+    this.savingComment = true;
+    const message = this.commentForm.getRawValue().message!;
+
+    this.ticketService.addComment(this.ticket.id, message).subscribe({
+      next: (comment) => {
+        this.ticket!.comments = [...(this.ticket!.comments ?? []), comment];
+        this.commentForm.reset();
+        this.savingComment = false;
+      },
+      error: () => { this.savingComment = false; }
+    });
+  }
+
+  saveUpdate(): void {
+    if (!this.ticket) return;
+    this.savingUpdate = true;
+    const { status, priority } = this.updateForm.getRawValue();
+
+    this.ticketService.updateTicket(this.ticket.id, {
+      status: (status || undefined) as TicketStatus | undefined,
+      priority: (priority || undefined) as TicketPriority | undefined,
+    }).subscribe({
+      next: (t) => { this.ticket = t; this.savingUpdate = false; },
+      error: () => { this.savingUpdate = false; }
+    });
+  }
+
+  assignAgent(): void {
+    if (!this.ticket) return;
+    const agentId = this.updateForm.getRawValue().agentId;
+    if (!agentId) return;
+
+    this.ticketService.assignTicket(this.ticket.id, agentId).subscribe({
+      next: (t) => { this.ticket = t; },
+      error: () => {}
+    });
+  }
+
+  goBack(): void {
+    this.router.navigate(['/tickets']);
+  }
+}

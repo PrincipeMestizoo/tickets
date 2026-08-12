@@ -1,0 +1,86 @@
+<div class="container-page animate-fade-up">
+  <button class="btn btn-ghost" (click)="goBack()">‹ Volver a tickets</button>
+
+  <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+  <p class="form-error" *ngIf="errorMsg">{{ errorMsg }}</p>
+
+  <ng-container *ngIf="!loading && ticket as t">
+    <div class="detail-header card">
+      <div>
+        <div class="detail-header__badges">
+          <app-status-badge [status]="t.status"></app-status-badge>
+          <app-priority-badge [priority]="t.priority"></app-priority-badge>
+        </div>
+        <h1>{{ t.title }}</h1>
+        <p class="detail-header__meta">
+          Creado {{ t.createdAt | relativeTime }}
+          <span *ngIf="t.clientName"> · Cliente: {{ t.clientName }}</span>
+          <span *ngIf="t.agentName"> · Agente: {{ t.agentName }}</span>
+        </p>
+      </div>
+    </div>
+
+    <div class="detail-grid">
+      <div class="card detail-description">
+        <h3>Descripción</h3>
+        <p>{{ t.description }}</p>
+      </div>
+
+      <div class="card detail-actions" *ngIf="canEditStatus || canAssign">
+        <h3>Gestión del ticket</h3>
+        <form [formGroup]="updateForm">
+          <div class="form-field" *ngIf="canEditStatus">
+            <label>Estado</label>
+            <select formControlName="status">
+              <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+            </select>
+          </div>
+          <div class="form-field" *ngIf="canEditStatus">
+            <label>Prioridad</label>
+            <select formControlName="priority">
+              <option *ngFor="let p of priorities" [value]="p">{{ p }}</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" type="button" *ngIf="canEditStatus" (click)="saveUpdate()" [disabled]="savingUpdate">
+            {{ savingUpdate ? 'Guardando...' : 'Guardar cambios' }}
+          </button>
+
+          <div class="form-field" *ngIf="canAssign" style="margin-top:16px;">
+            <label>Asignar agente</label>
+            <select formControlName="agentId">
+              <option value="">Sin asignar</option>
+              <option *ngFor="let a of agents" [value]="a.id">{{ a.name }}</option>
+            </select>
+          </div>
+          <button class="btn btn-outline" type="button" *ngIf="canAssign" (click)="assignAgent()">
+            Asignar
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="card comments-section">
+      <h3>Comentarios</h3>
+
+      <div class="comment" *ngFor="let c of t.comments" [class.comment--fade]="true">
+        <div class="comment__avatar">{{ c.author.charAt(0).toUpperCase() }}</div>
+        <div class="comment__body">
+          <div class="comment__meta">
+            <strong>{{ c.author }}</strong>
+            <span>{{ c.createdAt | relativeTime }}</span>
+          </div>
+          <p>{{ c.message }}</p>
+        </div>
+      </div>
+
+      <p class="comments-empty" *ngIf="!t.comments?.length">Aún no hay comentarios.</p>
+
+      <form [formGroup]="commentForm" (ngSubmit)="addComment()" class="comment-form">
+        <textarea formControlName="message" rows="3" placeholder="Escribe un comentario..."></textarea>
+        <button class="btn btn-primary" type="submit" [disabled]="commentForm.invalid || savingComment">
+          {{ savingComment ? 'Enviando...' : 'Comentar' }}
+        </button>
+      </form>
+    </div>
+  </ng-container>
+</div>
