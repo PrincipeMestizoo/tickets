@@ -1,0 +1,45 @@
+<div class="auth-page">
+  <div class="auth-card card animate-fade-up">
+    <div class="auth-card__brand">
+      <span class="auth-card__logo">HD</span>
+      <h2>Crea tu cuenta</h2>
+      <p>Te registrarás como cliente para reportar tickets</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="form-field">
+        <label for="name">Nombre completo</label>
+        <input id="name" type="text" formControlName="name" placeholder="Tu nombre" autocomplete="name" />
+        <span class="form-error" *ngIf="f['name'].touched && f['name'].invalid">
+          Ingresa tu nombre.
+        </span>
+      </div>
+
+      <div class="form-field">
+        <label for="email">Correo electrónico</label>
+        <input id="email" type="email" formControlName="email" placeholder="nombre@correo.com" autocomplete="email" />
+        <span class="form-error" *ngIf="f['email'].touched && f['email'].invalid">
+          Ingresa un correo válido.
+        </span>
+      </div>
+
+      <div class="form-field">
+        <label for="password">Contraseña</label>
+        <input id="password" type="password" formControlName="password" placeholder="Mínimo 6 caracteres" autocomplete="new-password" />
+        <span class="form-error" *ngIf="f['password'].touched && f['password'].invalid">
+          La contraseña debe tener al menos 6 caracteres.
+        </span>
+      </div>
+
+      <p class="form-error auth-card__server-error" *ngIf="serverError">{{ serverError }}</p>
+
+      <button class="btn btn-primary auth-card__submit" type="submit" [disabled]="loading">
+        {{ loading ? 'Creando cuenta...' : 'Registrarme' }}
+      </button>
+    </form>
+
+    <p class="auth-card__footer">
+      ¿Ya tienes cuenta? <a routerLink="/auth/login">Inicia sesión</a>
+    </p>
+  </div>
+</div>

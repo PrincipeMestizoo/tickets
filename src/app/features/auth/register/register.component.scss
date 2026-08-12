@@ -1,0 +1,44 @@
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gradient-blue);
+  padding: 24px;
+}
+
+.auth-card {
+  width: 380px;
+  max-width: 100%;
+  padding: 36px 32px;
+
+  &__brand {
+    text-align: center;
+    margin-bottom: 24px;
+
+    p { color: var(--color-text-muted); font-size: .875rem; margin-top: 4px; }
+  }
+
+  &__logo {
+    display: inline-flex;
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: var(--color-orange-500);
+    color: #fff;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-family: 'Poppins', sans-serif;
+    margin-bottom: 12px;
+  }
+
+  &__submit { width: 100%; margin-top: 6px; }
+  &__server-error { text-align: center; margin-top: -6px; margin-bottom: 12px; }
+  &__footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: .875rem;
+    color: var(--color-text-muted);
+  }
+}
