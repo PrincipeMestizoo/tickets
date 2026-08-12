@@ -1,0 +1,18 @@
+<header class="navbar">
+  <div class="navbar__brand" routerLink="/dashboard">
+    <span class="navbar__logo">HD</span>
+    <span class="navbar__title">HelpDesk</span>
+  </div>
+
+  <div class="navbar__user" *ngIf="currentUser$ | async as user" (click)="toggleMenu()">
+    <div class="navbar__avatar">{{ user.name.charAt(0).toUpperCase() }}</div>
+    <div class="navbar__info">
+      <span class="navbar__name">{{ user.name }}</span>
+      <span class="navbar__role">{{ roleLabel[user.role] }}</span>
+    </div>
+
+    <div class="navbar__dropdown" *ngIf="menuOpen">
+      <button class="btn btn-ghost" (click)="logout()">Cerrar sesión</button>
+    </div>
+  </div>
+</header>

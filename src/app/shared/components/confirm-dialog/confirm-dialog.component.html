@@ -1,0 +1,10 @@
+<div class="overlay animate-fade" *ngIf="open">
+  <div class="dialog card animate-fade-up">
+    <h3>{{ title }}</h3>
+    <p>{{ message }}</p>
+    <div class="dialog__actions">
+      <button class="btn btn-ghost" (click)="cancelled.emit()">Cancelar</button>
+      <button class="btn btn-primary" (click)="confirmed.emit()">Confirmar</button>
+    </div>
+  </div>
+</div>

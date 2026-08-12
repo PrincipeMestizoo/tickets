@@ -1,0 +1,13 @@
+<aside class="sidebar">
+  <nav class="sidebar__nav">
+    <a
+      *ngFor="let item of items"
+      class="sidebar__link"
+      [routerLink]="item.route"
+      routerLinkActive="sidebar__link--active"
+      [routerLinkActiveOptions]="{ exact: item.route === '/tickets/new' ? true : false }">
+      <span class="sidebar__icon">{{ item.icon }}</span>
+      <span>{{ item.label }}</span>
+    </a>
+  </nav>
+</aside>

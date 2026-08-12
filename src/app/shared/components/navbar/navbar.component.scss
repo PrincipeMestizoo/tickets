@@ -1,0 +1,84 @@
+.navbar {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  background: var(--gradient-blue);
+  box-shadow: var(--shadow-medium);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+
+  &__brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+  }
+
+  &__logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--color-orange-500);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  &__title {
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 1.15rem;
+    letter-spacing: .3px;
+  }
+
+  &__user {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: var(--radius-md);
+    transition: background var(--transition-base);
+    &:hover { background: rgba(255,255,255,.12); }
+  }
+
+  &__avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--color-orange-500);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+  }
+
+  &__name { color: #fff; font-size: .875rem; font-weight: 600; }
+  &__role { color: rgba(255,255,255,.75); font-size: .72rem; }
+
+  &__dropdown {
+    position: absolute;
+    top: 52px;
+    right: 0;
+    background: var(--color-white);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-medium);
+    padding: 8px;
+    animation: fadeInUp .2s ease both;
+  }
+}

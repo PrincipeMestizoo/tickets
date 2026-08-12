@@ -1,0 +1,15 @@
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: .75rem;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+
+  &--open { background: var(--status-open); }
+  &--in_progress { background: var(--status-in_progress); }
+  &--resolved { background: var(--status-resolved); }
+  &--closed { background: var(--status-closed); }
+}
