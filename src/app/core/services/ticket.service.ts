@@ -3,8 +3,12 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import {
-  Ticket, CreateTicketRequest, UpdateTicketRequest,
-  PaginatedResponse, TicketFilters, TicketComment
+  Ticket,
+  CreateTicketRequest,
+  UpdateTicketRequest,
+  PaginatedResponse,
+  TicketFilters,
+  TicketComment,
 } from '../models/ticket.model';
 
 @Injectable({ providedIn: 'root' })
@@ -13,7 +17,9 @@ export class TicketService {
 
   constructor(private http: HttpClient) {}
 
-  getTickets(filters: TicketFilters = {}): Observable<PaginatedResponse<Ticket>> {
+  getTickets(
+    filters: TicketFilters = {},
+  ): Observable<PaginatedResponse<Ticket>> {
     let params = new HttpParams();
     if (filters.status) params = params.set('status', filters.status);
     if (filters.priority) params = params.set('priority', filters.priority);
@@ -39,6 +45,12 @@ export class TicketService {
   }
 
   addComment(id: string, message: string): Observable<TicketComment> {
-    return this.http.post<TicketComment>(`${this.base}/${id}/comments`, { message });
+    return this.http.post<TicketComment>(`${this.base}/${id}/comments`, {
+      message,
+    });
+  }
+
+  getComments(ticketId: string): Observable<TicketComment[]> {
+    return this.http.get<TicketComment[]>(`${this.base}/${ticketId}/comments`);
   }
 }

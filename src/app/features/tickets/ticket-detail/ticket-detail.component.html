@@ -26,22 +26,25 @@
         <p>{{ t.description }}</p>
       </div>
 
-      <div class="card detail-actions" *ngIf="canEditStatus || canAssign">
+      <div class="card detail-actions" *ngIf="canChangeStatus || canChangePriority || canAssign">
         <h3>Gestión del ticket</h3>
         <form [formGroup]="updateForm">
-          <div class="form-field" *ngIf="canEditStatus">
+          <div class="form-field" *ngIf="canChangeStatus">
             <label>Estado</label>
             <select formControlName="status">
               <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
             </select>
           </div>
-          <div class="form-field" *ngIf="canEditStatus">
+
+          <div class="form-field" *ngIf="canChangePriority">
             <label>Prioridad</label>
             <select formControlName="priority">
               <option *ngFor="let p of priorities" [value]="p">{{ p }}</option>
             </select>
           </div>
-          <button class="btn btn-primary" type="button" *ngIf="canEditStatus" (click)="saveUpdate()" [disabled]="savingUpdate">
+
+          <button class="btn btn-primary" type="button" *ngIf="canChangeStatus || canChangePriority"
+            (click)="saveUpdate()" [disabled]="savingUpdate">
             {{ savingUpdate ? 'Guardando...' : 'Guardar cambios' }}
           </button>
 

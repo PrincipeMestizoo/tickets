@@ -4,13 +4,17 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { TicketService } from '../../../core/services/ticket.service';
 import { UserService } from '../../../core/services/user.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { Ticket, TicketPriority, TicketStatus } from '../../../core/models/ticket.model';
+import {
+  Ticket,
+  TicketPriority,
+  TicketStatus,
+} from '../../../core/models/ticket.model';
 import { User } from '../../../core/models/user.model';
 
 @Component({
   selector: 'app-ticket-detail',
   templateUrl: './ticket-detail.component.html',
-  styleUrls: ['./ticket-detail.component.scss']
+  styleUrls: ['./ticket-detail.component.scss'],
 })
 export class TicketDetailComponent implements OnInit {
   ticket: Ticket | null = null;
@@ -50,16 +54,32 @@ export class TicketDetailComponent implements OnInit {
 
     if (this.authService.hasRole('admin')) {
       this.userService.getAgents().subscribe({
-        next: agents => this.agents = agents,
-        error: () => {}
+        next: (agents) => (this.agents = agents),
+        error: () => {},
       });
     }
   }
 
   // Reglas visibles en el formulario según el rol (el backend valida de todas formas):
+  /*
+  
   get canEditStatus(): boolean {
     return this.authService.hasRole('admin') ||
-      (this.authService.hasRole('agent') && this.ticket?.agentId === this.authService.currentUser?.id);
+      (this.authSe
+      rvice.hasRole('agent') && this.ticket?.agentId === this.authService.currentUser?.id);
+  }
+  */
+
+  get canChangeStatus(): boolean {
+    return (
+      this.authService.hasRole('admin') ||
+      (this.authService.hasRole('agent') &&
+        this.ticket?.agentId === this.authService.currentUser?.id)
+    );
+  }
+
+  get canChangePriority(): boolean {
+    return this.authService.hasRole('admin');
   }
 
   get canAssign(): boolean {
@@ -77,11 +97,21 @@ export class TicketDetailComponent implements OnInit {
           agentId: t.agentId ?? '',
         });
         this.loading = false;
+
+        // Los comentarios no vienen en el detalle del ticket: se piden aparte.
+        this.ticketService.getComments(t.id).subscribe({
+          next: (comments) => {
+            this.ticket!.comments = comments;
+          },
+          error: () => {
+            /* si falla, se queda "Aún no hay comentarios" */
+          },
+        });
       },
       error: () => {
         this.errorMsg = 'No fue posible cargar el ticket.';
         this.loading = false;
-      }
+      },
     });
   }
 
@@ -96,7 +126,9 @@ export class TicketDetailComponent implements OnInit {
         this.commentForm.reset();
         this.savingComment = false;
       },
-      error: () => { this.savingComment = false; }
+      error: () => {
+        this.savingComment = false;
+      },
     });
   }
 
@@ -105,13 +137,24 @@ export class TicketDetailComponent implements OnInit {
     this.savingUpdate = true;
     const { status, priority } = this.updateForm.getRawValue();
 
-    this.ticketService.updateTicket(this.ticket.id, {
-      status: (status || undefined) as TicketStatus | undefined,
-      priority: (priority || undefined) as TicketPriority | undefined,
-    }).subscribe({
-      next: (t) => { this.ticket = t; this.savingUpdate = false; },
-      error: () => { this.savingUpdate = false; }
-    });
+    this.ticketService
+      .updateTicket(this.ticket.id, {
+        status: this.canChangeStatus
+          ? ((status || undefined) as TicketStatus)
+          : undefined,
+        priority: this.canChangePriority
+          ? ((priority || undefined) as TicketPriority)
+          : undefined,
+      })
+      .subscribe({
+        next: (t) => {
+          this.ticket = t;
+          this.savingUpdate = false;
+        },
+        error: () => {
+          this.savingUpdate = false;
+        },
+      });
   }
 
   assignAgent(): void {
@@ -120,8 +163,10 @@ export class TicketDetailComponent implements OnInit {
     if (!agentId) return;
 
     this.ticketService.assignTicket(this.ticket.id, agentId).subscribe({
-      next: (t) => { this.ticket = t; },
-      error: () => {}
+      next: (t) => {
+        this.ticket = t;
+      },
+      error: () => {},
     });
   }
 
