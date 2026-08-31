@@ -6,7 +6,7 @@ import { User } from '../../core/models/user.model';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+  styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
   user: User | null = this.authService.currentUser;
@@ -15,16 +15,27 @@ export class DashboardComponent implements OnInit {
   inProgressCount = 0;
   resolvedCount = 0;
 
-  constructor(private authService: AuthService, private ticketService: TicketService) {}
-
+  constructor(
+    private authService: AuthService,
+    private ticketService: TicketService,
+  ) {}
+  
   ngOnInit(): void {
-    // Resumen rápido usando el mismo endpoint de tickets con distintos filtros.
-    this.ticketService.getTickets({ status: 'open', pageSize: 1 }).subscribe(res => this.openCount = res.total);
-    this.ticketService.getTickets({ status: 'in_progress', pageSize: 1 }).subscribe(res => this.inProgressCount = res.total);
-    this.ticketService.getTickets({ status: 'resolved', pageSize: 1 }).subscribe({
-      next: res => { this.resolvedCount = res.total; this.loading = false; },
-      error: () => this.loading = false,
-    });
+    this.ticketService
+      .getTickets({ status: 'open', pageSize: 1 })
+      .subscribe((res) => (this.openCount = res.meta.total));
+    this.ticketService
+      .getTickets({ status: 'in_progress', pageSize: 1 })
+      .subscribe((res) => (this.inProgressCount = res.meta.total));
+    this.ticketService
+      .getTickets({ status: 'resolved', pageSize: 1 })
+      .subscribe({
+        next: (res) => {
+          this.resolvedCount = res.meta.total;
+          this.loading = false;
+        },
+        error: () => (this.loading = false),
+      });
   }
 
   get welcomeMessage(): string {
