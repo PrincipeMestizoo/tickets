@@ -2,17 +2,24 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TicketService } from '../../../core/services/ticket.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { Ticket, TicketFilters, TicketPriority, TicketStatus } from '../../../core/models/ticket.model';
+import {
+  Ticket,
+  TicketFilters,
+  TicketPriority,
+  TicketStatus,
+} from '../../../core/models/ticket.model';
 
 @Component({
   selector: 'app-ticket-list',
   templateUrl: './ticket-list.component.html',
-  styleUrls: ['./ticket-list.component.scss']
+  styleUrls: ['./ticket-list.component.scss'],
 })
 export class TicketListComponent implements OnInit {
   tickets: Ticket[] = [];
   loading = true;
   errorMsg = '';
+
+  totalPages = 1;
 
   page = 1;
   pageSize = 8;
@@ -27,7 +34,7 @@ export class TicketListComponent implements OnInit {
   constructor(
     private ticketService: TicketService,
     public authService: AuthService,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -36,10 +43,6 @@ export class TicketListComponent implements OnInit {
 
   get canCreate(): boolean {
     return this.authService.hasRole('client', 'admin');
-  }
-
-  get totalPages(): number {
-    return Math.max(1, Math.ceil(this.total / this.pageSize));
   }
 
   load(): void {
@@ -56,13 +59,14 @@ export class TicketListComponent implements OnInit {
     this.ticketService.getTickets(filters).subscribe({
       next: (res) => {
         this.tickets = res.data;
-        this.total = res.total;
+        this.total = res.meta.total;
+        this.totalPages = res.meta.totalPages;
         this.loading = false;
       },
       error: () => {
         this.errorMsg = 'No fue posible cargar los tickets. Intenta de nuevo.';
         this.loading = false;
-      }
+      },
     });
   }
 
