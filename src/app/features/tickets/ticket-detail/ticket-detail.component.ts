@@ -121,13 +121,20 @@ export class TicketDetailComponent implements OnInit {
   addComment(): void {
     if (this.commentForm.invalid || !this.ticket) return;
     this.savingComment = true;
-    const message = this.commentForm.getRawValue().message!;
+    const body = this.commentForm.getRawValue().message!;
 
-    this.ticketService.addComment(this.ticket.id, message).subscribe({
-      next: (comment) => {
-        this.ticket!.comments = [...(this.ticket!.comments ?? []), comment];
-        this.commentForm.reset();
-        this.savingComment = false;
+    this.ticketService.addComment(this.ticket.id, body).subscribe({
+      next: () => {
+        this.ticketService.getComments(this.ticket!.id).subscribe({
+          next: (comments) => {
+            this.ticket!.comments = comments;
+            this.commentForm.reset();
+            this.savingComment = false;
+          },
+          error: () => {
+            this.savingComment = false;
+          },
+        });
       },
       error: () => {
         this.savingComment = false;
@@ -178,32 +185,31 @@ export class TicketDetailComponent implements OnInit {
   }
 
   get canDelete(): boolean {
-  return this.authService.hasRole('admin');
-}
+    return this.authService.hasRole('admin');
+  }
 
-openDeleteConfirm(): void {
-  this.confirmDeleteOpen = true;
-}
+  openDeleteConfirm(): void {
+    this.confirmDeleteOpen = true;
+  }
 
-cancelDelete(): void {
-  this.confirmDeleteOpen = false;
-}
+  cancelDelete(): void {
+    this.confirmDeleteOpen = false;
+  }
 
-confirmDelete(): void {
-  if (!this.ticket) return;
-  this.deleting = true;
+  confirmDelete(): void {
+    if (!this.ticket) return;
+    this.deleting = true;
 
-  this.ticketService.deleteTicket(this.ticket.id).subscribe({
-    next: () => {
-      this.deleting = false;
-      this.confirmDeleteOpen = false;
-      this.router.navigate(['/tickets']);
-    },
-    error: () => {
-      this.deleting = false;
-      this.confirmDeleteOpen = false;
-    }
-  });
-}
-
+    this.ticketService.deleteTicket(this.ticket.id).subscribe({
+      next: () => {
+        this.deleting = false;
+        this.confirmDeleteOpen = false;
+        this.router.navigate(['/tickets']);
+      },
+      error: () => {
+        this.deleting = false;
+        this.confirmDeleteOpen = false;
+      },
+    });
+  }
 }

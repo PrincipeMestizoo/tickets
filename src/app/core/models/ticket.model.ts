@@ -3,10 +3,15 @@ export type TicketPriority = 'low' | 'medium' | 'high' | 'urgent';
 
 export interface TicketComment {
   id: string;
-  author: string;
+  ticketId: string;
   authorId: string;
-  message: string;
+  body: string;
   createdAt: string;
+  author: {
+    id: string;
+    name: string;
+    role: string;
+  };
 }
 
 export interface Ticket {

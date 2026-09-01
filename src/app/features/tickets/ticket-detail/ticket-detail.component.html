@@ -70,13 +70,13 @@
       <h3>Comentarios</h3>
 
       <div class="comment" *ngFor="let c of t.comments" [class.comment--fade]="true">
-        <div class="comment__avatar">{{ c.author.charAt(0).toUpperCase() }}</div>
+        <div class="comment__avatar">{{ c.author.name.charAt(0).toUpperCase() }}</div>
         <div class="comment__body">
           <div class="comment__meta">
-            <strong>{{ c.author }}</strong>
+            <strong>{{ c.author.name }}</strong>
             <span>{{ c.createdAt | relativeTime }}</span>
           </div>
-          <p>{{ c.message }}</p>
+          <p>{{ c.body }}</p>
         </div>
       </div>
 
@@ -90,11 +90,8 @@
       </form>
     </div>
   </ng-container>
-  <app-confirm-dialog
-  [open]="confirmDeleteOpen"
-  title="¿Eliminar este ticket?"
-  message="Esta acción es permanente. El ticket y sus comentarios se eliminarán."
-  (confirmed)="confirmDelete()"
-  (cancelled)="cancelDelete()">
-</app-confirm-dialog>
+  <app-confirm-dialog [open]="confirmDeleteOpen" title="¿Eliminar este ticket?"
+    message="Esta acción es permanente. El ticket y sus comentarios se eliminarán." (confirmed)="confirmDelete()"
+    (cancelled)="cancelDelete()">
+  </app-confirm-dialog>
 </div>

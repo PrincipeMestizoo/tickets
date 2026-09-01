@@ -4,8 +4,12 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import {
-  Ticket, CreateTicketRequest, UpdateTicketRequest,
-  PaginatedResponse, TicketFilters, TicketComment
+  Ticket,
+  CreateTicketRequest,
+  UpdateTicketRequest,
+  PaginatedResponse,
+  TicketFilters,
+  TicketComment,
 } from '../models/ticket.model';
 
 @Injectable({ providedIn: 'root' })
@@ -14,7 +18,9 @@ export class TicketService {
 
   constructor(private http: HttpClient) {}
 
-  getTickets(filters: TicketFilters = {}): Observable<PaginatedResponse<Ticket>> {
+  getTickets(
+    filters: TicketFilters = {},
+  ): Observable<PaginatedResponse<Ticket>> {
     let params = new HttpParams();
     if (filters.status) params = params.set('status', filters.status);
     if (filters.priority) params = params.set('priority', filters.priority);
@@ -24,39 +30,43 @@ export class TicketService {
   }
 
   getTicketById(id: string): Observable<Ticket> {
-    return this.http.get<{ data: Ticket }>(`${this.base}/${id}`).pipe(
-      map(res => res.data)
-    );
+    return this.http
+      .get<{ data: Ticket }>(`${this.base}/${id}`)
+      .pipe(map((res) => res.data));
   }
 
   createTicket(payload: CreateTicketRequest): Observable<Ticket> {
-    return this.http.post<{ data: Ticket }>(this.base, payload).pipe(
-      map(res => res.data)
-    );
+    return this.http
+      .post<{ data: Ticket }>(this.base, payload)
+      .pipe(map((res) => res.data));
   }
 
   updateTicket(id: string, payload: UpdateTicketRequest): Observable<Ticket> {
-    return this.http.patch<{ data: Ticket }>(`${this.base}/${id}`, payload).pipe(
-      map(res => res.data)
-    );
+    return this.http
+      .patch<{ data: Ticket }>(`${this.base}/${id}`, payload)
+      .pipe(map((res) => res.data));
   }
 
   assignTicket(id: string, agentId: string): Observable<Ticket> {
-    return this.http.post<{ data: Ticket }>(`${this.base}/${id}/assign`, { agentId }).pipe(
-      map(res => res.data)
-    );
+    return this.http
+      .post<{ data: Ticket }>(`${this.base}/${id}/assign`, { agentId })
+      .pipe(map((res) => res.data));
   }
 
   getComments(ticketId: string): Observable<TicketComment[]> {
-    return this.http.get<TicketComment[]>(`${this.base}/${ticketId}/comments`);
+    return this.http
+      .get<{
+        data: TicketComment[];
+        total: number;
+      }>(`${this.base}/${ticketId}/comments`)
+      .pipe(map((res) => res.data));
   }
 
-  addComment(id: string, message: string): Observable<TicketComment> {
-    return this.http.post<TicketComment>(`${this.base}/${id}/comments`, { message });
+  addComment(id: string, body: string): Observable<unknown> {
+    return this.http.post(`${this.base}/${id}/comments`, { body });
   }
 
   deleteTicket(id: string): Observable<void> {
-  return this.http.delete<void>(`${this.base}/${id}`);
-}
-
+    return this.http.delete<void>(`${this.base}/${id}`);
+  }
 }
