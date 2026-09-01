@@ -18,6 +18,10 @@
           <span *ngIf="t.agentName"> · Agente: {{ t.agentName }}</span>
         </p>
       </div>
+
+      <button class="btn btn-danger-pulse" *ngIf="canDelete" (click)="openDeleteConfirm()">
+        🗑 Eliminar ticket
+      </button>
     </div>
 
     <div class="detail-grid">
@@ -86,4 +90,11 @@
       </form>
     </div>
   </ng-container>
+  <app-confirm-dialog
+  [open]="confirmDeleteOpen"
+  title="¿Eliminar este ticket?"
+  message="Esta acción es permanente. El ticket y sus comentarios se eliminarán."
+  (confirmed)="confirmDelete()"
+  (cancelled)="cancelDelete()">
+</app-confirm-dialog>
 </div>

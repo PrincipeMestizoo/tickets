@@ -22,7 +22,7 @@ export class TicketListComponent implements OnInit {
   totalPages = 1;
 
   page = 1;
-  pageSize = 8;
+  pageSize = 9;
   total = 0;
 
   statusFilter: TicketStatus | '' = '';

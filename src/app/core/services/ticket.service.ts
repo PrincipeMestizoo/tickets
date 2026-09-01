@@ -54,4 +54,9 @@ export class TicketService {
   addComment(id: string, message: string): Observable<TicketComment> {
     return this.http.post<TicketComment>(`${this.base}/${id}/comments`, { message });
   }
+
+  deleteTicket(id: string): Observable<void> {
+  return this.http.delete<void>(`${this.base}/${id}`);
+}
+
 }

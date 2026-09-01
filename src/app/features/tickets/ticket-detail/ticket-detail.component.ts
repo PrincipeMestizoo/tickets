@@ -23,6 +23,9 @@ export class TicketDetailComponent implements OnInit {
   savingComment = false;
   savingUpdate = false;
 
+  deleting = false;
+  confirmDeleteOpen = false;
+
   agents: User[] = [];
   statuses: TicketStatus[] = ['open', 'in_progress', 'resolved', 'closed'];
   priorities: TicketPriority[] = ['low', 'medium', 'high', 'urgent'];
@@ -173,4 +176,34 @@ export class TicketDetailComponent implements OnInit {
   goBack(): void {
     this.router.navigate(['/tickets']);
   }
+
+  get canDelete(): boolean {
+  return this.authService.hasRole('admin');
+}
+
+openDeleteConfirm(): void {
+  this.confirmDeleteOpen = true;
+}
+
+cancelDelete(): void {
+  this.confirmDeleteOpen = false;
+}
+
+confirmDelete(): void {
+  if (!this.ticket) return;
+  this.deleting = true;
+
+  this.ticketService.deleteTicket(this.ticket.id).subscribe({
+    next: () => {
+      this.deleting = false;
+      this.confirmDeleteOpen = false;
+      this.router.navigate(['/tickets']);
+    },
+    error: () => {
+      this.deleting = false;
+      this.confirmDeleteOpen = false;
+    }
+  });
+}
+
 }
