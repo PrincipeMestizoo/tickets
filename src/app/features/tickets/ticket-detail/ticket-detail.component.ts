@@ -77,12 +77,16 @@ export class TicketDetailComponent implements OnInit {
     return (
       this.authService.hasRole('admin') ||
       (this.authService.hasRole('agent') &&
-        this.ticket?.agentId === this.authService.currentUser?.id)
+        this.ticket?.assignedTo === this.authService.currentUser?.id)
     );
   }
 
   get canChangePriority(): boolean {
-    return this.authService.hasRole('admin');
+    return (
+      this.authService.hasRole('admin') ||
+      (this.authService.hasRole('agent') &&
+        this.ticket?.assignedTo === this.authService.currentUser?.id)
+    );
   }
 
   get canAssign(): boolean {
@@ -97,7 +101,7 @@ export class TicketDetailComponent implements OnInit {
         this.updateForm.patchValue({
           status: t.status,
           priority: t.priority,
-          agentId: t.agentId ?? '',
+          agentId: t.assignedTo ?? '',
         });
         this.loading = false;
 

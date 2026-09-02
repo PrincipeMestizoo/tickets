@@ -20,9 +20,9 @@ export interface Ticket {
   description: string;
   status: TicketStatus;
   priority: TicketPriority;
-  clientId: string;
+  createdBy: string;
   clientName?: string;
-  agentId?: string | null;
+  assignedTo?: string | null;
   agentName?: string | null;
   createdAt: string;
   updatedAt?: string;
